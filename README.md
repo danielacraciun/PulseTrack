@@ -1,5 +1,6 @@
 # PulseTrack #
-#### student: Craciun Daniela group:933 ####
+#### student: Craciun Daniela ####
+##### group:933 #####
 Assignment for MA course
 
 ## What does it do? ##
