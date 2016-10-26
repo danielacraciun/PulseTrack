@@ -7,7 +7,7 @@ Log your pulse, then see the stats. Get articles on better heart health.
 ## Requirements ##
 
 **input form**   
-insert an entry of pulse (time, value)
+insert an entry of pulse (time, value, current feeling)
 
 **list of items**   
 - log of each pulse entry (day based? month based?)
@@ -18,6 +18,10 @@ tracking of pulse values over time in chart
 
 **authentication**   
 can only acces a list of recommended articles, can save and see pulse + graphs only after registering (sign up with facebook/google account)
+
+**user types**
+- anonymous - they can only read articles
+- registered user - they can log their pulse, check the stats and read the articles
 
 **online support**   
 (synchronize date to/from a remote location)   
