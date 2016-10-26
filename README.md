@@ -2,7 +2,7 @@
 Assignment for MA course
 
 ## What does it do? ##
-Log your pulse, then see the stats. Get articles on better heart health.
+Log your pulse, then see the stats. Helps friends and family also keep track of your heart health.
 
 ## Requirements ##
 
@@ -11,25 +11,24 @@ insert an entry of pulse (time, value, current feeling)
 
 **list of items**   
 - log of each pulse entry (day based? month based?)
-- article list
 
 **charts**   
-tracking of pulse values over time in chart
+tracking of pulse values, their state over time in chart
 
 **authentication**   
-can only acces a list of recommended articles, can save and see pulse + graphs only after registering (sign up with facebook/google account)
+when authenticating, the user will have to choose between being a patient or a caregiver (sign up with facebook/google account)
 
 **user types**
-- anonymous - they can only read articles
-- registered user - they can log their pulse, check the stats and read the articles
+- patient - person with heart problems, can log their pulse, see the stats, monitor changes
+- caregiver - can only see the changes, subscribe to alerts for certain users
 
 **online support**   
 (synchronize date to/from a remote location)   
-check for new articles daily/on refresh when connected to the internet from another source (api based)
+for caregivers: daily check on the state of each patient (notifications)
 
 **offline support**   
 (persist data on the local storage)   
-logs are stored locally for users, only 5 articles are stored locally
+logs are stored locally for users
 
 **intent**   
 (show map coordinates on google maps, or send an email using gmail)   
