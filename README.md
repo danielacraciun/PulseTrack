@@ -1,7 +1,6 @@
 # PulseTrack #
-#### student: Craciun Daniela ####
-##### group:933 #####
-Assignment for MA course
+student: Craciun Daniela
+group: 933 
 
 ## What does it do? ##
 Log your pulse, then see the stats. Helps friends and family also keep track of your heart health.
