@@ -10,7 +10,7 @@ Log your pulse, then see the stats. Helps friends and family also keep track of 
 insert an entry of pulse (time, value, current feeling)
 
 **list of items**   
-- log of each pulse entry (day based? month based?)
+log of each pulse entry (day based? month based?)
 
 **charts**   
 tracking of pulse values, their state over time in chart
