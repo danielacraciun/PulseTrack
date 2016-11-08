@@ -16,10 +16,11 @@ export class AddItem extends Component {
   addItem() {
     if (this.state.pulse != ''&& this.state.feling != '' && this.state.pulse == parseInt(this.state.pulse, 10))
     {
-      // Saving is done here
-      //
+      this.props.store.push({
+        "value": this.state.pulse,
+        "feeling": this.state.feeling,
+      });
       // Then return to first page after inserting
-      this.props.route.callback("ahmmmm back!");
       this.props.navigator.pop();
     } else {
       alert("Something is not right!")

@@ -23,22 +23,14 @@ class PulseList extends Component {
       loaded: false,
     };
   }
-
-  componentDidMount(){
-    this.fetchData();
-  }
-
-  fetchData() {
+  componentWillReceiveProps(nextProps) {
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(
-        [{ "value": "62", "feeling": "content"},
-         { "value": "75", "feeling": "happy"},
-         { "value": "83", "feeling": "angry"},
-      ]
+          this.props.content
       ),
       loaded: true,
     });
-    }
+  }
 
   renderMovie(pulse){
     return (
@@ -46,7 +38,8 @@ class PulseList extends Component {
       <Text style={{fontSize:20,
           paddingBottom: 10,
           borderBottomWidth: 2,
-          borderBottomColor: 'grey'}}>
+          borderBottomColor: 'white',
+          color: 'white',}}>
         Value: {pulse.value}  Feeling: {pulse.feeling}
       </Text>
       </View>
@@ -76,23 +69,17 @@ export class AppMain extends Component {
                 <Text style={styles.toolbarTitle}>PulseTrack</Text>
                   <TouchableHighlight
                     onPress={() => this.props.navigator.push({
-                      component: AddItem,
-                      callback: this.callbackFunction,})}>
+                      component: AddItem, passProps: {store: this.props.store}, index: 1})}>
                   <View>
                     <Text style={styles.toolbarButton}>Log pulse</Text>
                   </View>
                   </TouchableHighlight>
             </View>
             <View>
-              <PulseList />
+              <PulseList content={this.props.store}/>
             </View>
       </View>
     )
-  }
-
-  callbackFunction(args) {
-    //do something
-    alert(args);
   }
 }
 
@@ -100,6 +87,11 @@ class App extends Component {
   constructor(props)
   {
     super(props);
+    this.store = [
+     { "value": "62", "feeling": "content"},
+     { "value": "75", "feeling": "happy"},
+     { "value": "83", "feeling": "angry"},
+   ];
   }
 
   renderScene (route, navigator) {
@@ -109,7 +101,7 @@ class App extends Component {
   render() {
     return (
       <Navigator
-        initialRoute={{component: AppMain, index: 0}}
+        initialRoute={{component: AppMain, passProps: {store: this.store}, index: 0}}
         renderScene={this.renderScene}/>
     );
   }
