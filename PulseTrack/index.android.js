@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { AddItem } from './addlog.js'
+import { CustomButton } from './button.js'
 
 class PulseList extends Component {
   constructor(prop){
@@ -23,6 +24,7 @@ class PulseList extends Component {
       loaded: false,
     };
   }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(
@@ -32,16 +34,31 @@ class PulseList extends Component {
     });
   }
 
-  renderMovie(pulse){
+  componentDidMount(){
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(
+          this.props.content
+      ),
+      loaded: true,
+    });
+  }
+
+  renderMovie(pulse, navigator, store) {
     return (
       <View>
       <Text style={{fontSize:20,
-          paddingBottom: 10,
-          borderBottomWidth: 2,
-          borderBottomColor: 'white',
           color: 'white',}}>
         Value: {pulse.value}  Feeling: {pulse.feeling}
       </Text>
+      <CustomButton
+        name='EDIT'
+        onPress={() => navigator.push({
+          component: AddItem, passProps: {store: store}, index: 2})}
+        />
+      <Text style={{
+          borderBottomWidth: 2,
+          borderBottomColor: 'white',
+          color: 'white',}} />
       </View>
       );
   }
@@ -50,7 +67,7 @@ class PulseList extends Component {
     return (
       <ListView
       dataSource={this.state.dataSource}
-      renderRow={this.renderMovie}
+      renderRow={(rowData, navigator, store) => this.renderMovie(rowData, this.props.navigator, this.props.content)}
       style={styles.listView}
       />
     );
@@ -76,7 +93,7 @@ export class AppMain extends Component {
                   </TouchableHighlight>
             </View>
             <View>
-              <PulseList content={this.props.store}/>
+              <PulseList content={this.props.store} navigator={this.props.navigator}/>
             </View>
       </View>
     )
