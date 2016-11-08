@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PulseTrackAndroid</string>
+    <string name="edit_message">Enter a pulse value</string>
+    <string name="feeling_message">How are you feeling?</string>
+    <string name="button_send">SUBMIT</string>
+    <string name="pulse_log">PULSE LOG</string>
 </resources>
