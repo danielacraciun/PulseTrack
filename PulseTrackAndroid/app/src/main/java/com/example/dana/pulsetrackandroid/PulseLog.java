@@ -38,4 +38,23 @@ public class PulseLog {
     public String toString() {
         return "pulse:  " + pulse + ", feeling:  " + feeling;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PulseLog pulseLog = (PulseLog) o;
+
+        if (pulse != null ? !pulse.equals(pulseLog.pulse) : pulseLog.pulse != null) return false;
+        return feeling != null ? feeling.equals(pulseLog.feeling) : pulseLog.feeling == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pulse != null ? pulse.hashCode() : 0;
+        result = 31 * result + (feeling != null ? feeling.hashCode() : 0);
+        return result;
+    }
 }
