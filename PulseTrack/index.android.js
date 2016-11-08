@@ -1,53 +1,105 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
+  Button,
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  ListView,
+  View,
+  TouchableHighlight,
+  Alert,
+  Navigator
 } from 'react-native';
 
-export default class PulseTrack extends Component {
-  render() {
+import { AddItem } from './addlog.js'
+
+class PulseList extends Component {
+  constructor(prop){
+    super(prop);
+    this.state={
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
+      loaded: false,
+    };
+  }
+
+  componentDidMount(){
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(
+        [{ "value": "62", "feeling": "content"},
+         { "value": "75", "feeling": "happy"},
+         { "value": "83", "feeling": "angry"},
+      ]
+      ),
+      loaded: true,
+    });
+    }
+
+  renderMovie(pulse){
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+      <View>
+      <Text style={{fontSize:20}}>Value: {pulse.value}  Feeling: {pulse.feeling}</Text>
       </View>
+      );
+  }
+
+  render(){
+    return (
+      <ListView
+      dataSource={this.state.dataSource}
+      renderRow={this.renderMovie}
+      style={styles.listView}
+      />
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+export class AppMain extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-AppRegistry.registerComponent('PulseTrack', () => PulseTrack);
+  render() {
+    return (
+      <View>
+            <View style={styles.toolbar}>
+                <Text style={styles.toolbarTitle}>PulseTrack</Text>
+                  <TouchableHighlight onPress={() => this.props.navigator.push({component: AddItem})}>
+                  <View>
+                    <Text style={styles.toolbarButton}>Log pulse</Text>
+                  </View>
+                  </TouchableHighlight>
+            </View>
+            <View>
+              <PulseList />
+            </View>
+      </View>
+    )
+  }
+}
+
+class App extends Component {
+  constructor(props)
+  {
+    super(props);
+  }
+
+  renderScene (route, navigator) {
+    return <route.component {...route.passProps} navigator={navigator} />
+  }
+
+  render() {
+    return (
+      <Navigator
+        initialRoute={{component: AppMain, index: 0}}
+        renderScene={this.renderScene}/>
+    );
+  }
+}
+
+AppRegistry.registerComponent('PulseTrack', () => App);
