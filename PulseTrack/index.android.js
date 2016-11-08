@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { AddItem } from './addlog.js'
+import { EditItem } from './editlog.js'
 import { CustomButton } from './button.js'
 
 class PulseList extends Component {
@@ -26,9 +27,16 @@ class PulseList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    var newItems = [];
+    for (var i=0; i < nextProps.content.length; i++) {
+        var newItem = {}
+        newItem["value"] = nextProps.content[i].value;
+        newItem["feeling"] = nextProps.content[i].feeling;
+        newItems.push(newItem);
+    }
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(
-          this.props.content
+          newItems
       ),
       loaded: true,
     });
@@ -43,7 +51,7 @@ class PulseList extends Component {
     });
   }
 
-  renderMovie(pulse, navigator, store) {
+  renderPulse(pulse, navigator, store) {
     return (
       <View>
       <Text style={{fontSize:20,
@@ -53,7 +61,7 @@ class PulseList extends Component {
       <CustomButton
         name='EDIT'
         onPress={() => navigator.push({
-          component: AddItem, passProps: {store: store}, index: 2})}
+          component: EditItem, passProps: {store: store, item:pulse}, index: 2})}
         />
       <Text style={{
           borderBottomWidth: 2,
@@ -67,7 +75,7 @@ class PulseList extends Component {
     return (
       <ListView
       dataSource={this.state.dataSource}
-      renderRow={(rowData, navigator, store) => this.renderMovie(rowData, this.props.navigator, this.props.content)}
+      renderRow={(rowData, navigator, store) => this.renderPulse(rowData, this.props.navigator, this.props.content)}
       style={styles.listView}
       />
     );
