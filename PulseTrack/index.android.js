@@ -43,7 +43,12 @@ class PulseList extends Component {
   renderMovie(pulse){
     return (
       <View>
-      <Text style={{fontSize:20}}>Value: {pulse.value}  Feeling: {pulse.feeling}</Text>
+      <Text style={{fontSize:20,
+          paddingBottom: 10,
+          borderBottomWidth: 2,
+          borderBottomColor: 'grey'}}>
+        Value: {pulse.value}  Feeling: {pulse.feeling}
+      </Text>
       </View>
       );
   }
@@ -69,7 +74,10 @@ export class AppMain extends Component {
       <View>
             <View style={styles.toolbar}>
                 <Text style={styles.toolbarTitle}>PulseTrack</Text>
-                  <TouchableHighlight onPress={() => this.props.navigator.push({component: AddItem})}>
+                  <TouchableHighlight
+                    onPress={() => this.props.navigator.push({
+                      component: AddItem,
+                      callback: this.callbackFunction,})}>
                   <View>
                     <Text style={styles.toolbarButton}>Log pulse</Text>
                   </View>
@@ -81,6 +89,11 @@ export class AppMain extends Component {
       </View>
     )
   }
+
+  callbackFunction(args) {
+    //do something
+    alert(args);
+  }
 }
 
 class App extends Component {
@@ -90,7 +103,7 @@ class App extends Component {
   }
 
   renderScene (route, navigator) {
-    return <route.component {...route.passProps} navigator={navigator} />
+    return <route.component {...route.passProps} navigator={navigator}/>
   }
 
   render() {
@@ -101,5 +114,28 @@ class App extends Component {
     );
   }
 }
+
+var styles = StyleSheet.create({
+    toolbar:{
+        backgroundColor:'#81c04d',
+        paddingTop:30,
+        paddingBottom:10,
+        flexDirection:'row'    //Step 1
+    },
+    toolbarButton:{
+        width: 80,            //Step 2
+    },
+    toolbarTitle:{
+        fontSize: 25,
+        color:'#fff',
+        textAlign: 'left',
+        paddingLeft:10,
+        fontWeight:'bold',
+        flex:1                //Step 3
+    },
+    listView: {
+        backgroundColor: 'green',
+    },
+});
 
 AppRegistry.registerComponent('PulseTrack', () => App);
