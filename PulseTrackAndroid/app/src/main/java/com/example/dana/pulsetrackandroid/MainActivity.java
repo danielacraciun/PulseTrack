@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String EXTRA_MESSAGE = "com.example.dana.pulsetrackandroid.MESSAGE";
     private static List<String> pulseLog = new ArrayList<>();
 
     @Override
@@ -26,54 +24,66 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ListView myList = (ListView) findViewById(R.id.listView);
-        final ArrayList<String> itemList = new ArrayList<>();
-
-        final ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pulseLog);
+        final ArrayAdapter<String> adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pulseLog);
         myList.setAdapter(adapter);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(1000).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                itemList.remove(item);
-                                adapter.notifyDataSetChanged();
-                                view.setAlpha(1);
-                            }
-                        });
-                editItem(item);
+                String pulse = item.replaceAll("[^\\d.]", "");
+                String feeling = item.split("feeling:")[1].replaceAll(" ", "");
+                editItem(pulse, feeling);
             }
         });
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(AddPulseLog.EXTRA_MESSAGE);
         String source = intent.getStringExtra("source");
-        if (message != null && source != null) {
+
+        System.out.println(source);
+        if (source != null) {
             if (Objects.equals(source, "add")) {
-                PulseLog item = new PulseLog(Integer.parseInt(message.split(" ")[0]), message.split(" ")[1]);
-                pulseLog.add(item.toString());
-                adapter.notifyDataSetChanged();
-                source = null;
-            } else if (Objects.equals(source, "edit")) {
-                String init = message.split(",")[0];
-                String newl = message.split(",")[1];
-                PulseLog initLog = new PulseLog(Integer.parseInt(init.split(" ")[0]), init.split(" ")[1]);
-                PulseLog newLog = new PulseLog(Integer.parseInt(newl.split(" ")[0]), newl.split(" ")[1]);
-                for (int i = 0; i < pulseLog.size(); i++) {
-                    PulseLog ps = new PulseLog(Integer.parseInt(pulseLog.get(i).replaceAll("[^\\d.]", "")), pulseLog.get(i).split("feeling:")[1].replaceAll(" ", ""));
-                    if (Objects.equals(ps.getPulse(), initLog.getPulse()) && Objects.equals(ps.getFeeling(), initLog.getFeeling())) {
-                        System.out.println(ps.toString());
-                        pulseLog.set(i, newLog.toString());
-                    }
+                String pulse = intent.getStringExtra("pulse");
+                String feeling = intent.getStringExtra("feeling");
+
+                if (!Objects.equals(pulse, "") && feeling != null) {
+                    PulseLog item = new PulseLog(Integer.parseInt(pulse), feeling);
+                    pulseLog.add(item.toString());
+
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-                source = null;
+            } else if (Objects.equals(source, "edit")) {
+                String initPulse = intent.getStringExtra("initPulse");
+                String initFeeling = intent.getStringExtra("initFeeling");
+                String newPulse = intent.getStringExtra("newPulse");
+                String newFeeling = intent.getStringExtra("newFeeling");
+
+                PulseLog initLog = null;
+                PulseLog newLog = null;
+
+                if(!Objects.equals(initPulse, "") && initFeeling != null) {
+                    initLog = new PulseLog(Integer.parseInt(initPulse), initFeeling);
+                }
+                if(!Objects.equals(initPulse, "") && initFeeling != null) {
+                    newLog = new PulseLog(Integer.parseInt(newPulse), newFeeling);
+                }
+
+                if (initLog != null && newLog != null) {
+                    for (int i = 0; i < pulseLog.size(); i++) {
+                        PulseLog ps = parsePulseLogString(pulseLog.get(i));
+                        if (compareLog(initLog, ps)) {
+                            pulseLog.set(i, newLog.toString());
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
             }
         }
+    }
+
+    private boolean compareLog(PulseLog thisLog, PulseLog otherLog) {
+        return Objects.equals(
+                thisLog.getPulse(), otherLog.getPulse()) && Objects.equals(thisLog.getFeeling(), otherLog.getFeeling());
     }
 
     public void addLog(View view) {
@@ -81,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void editItem(String item) {
+    public void editItem(String pulse, String feeling) {
         Intent intent = new Intent(this, PulseLogDetail.class);
-        intent.putExtra(EXTRA_MESSAGE, item);
+        intent.putExtra("pulse", pulse);
+        intent.putExtra("feeling", feeling);
         startActivity(intent);
+    }
+
+    private PulseLog parsePulseLogString(String item) {
+        return new PulseLog(Integer.parseInt(item.replaceAll("[^\\d.]", "")), item.split("feeling:")[1].replaceAll(" ", ""));
     }
 }

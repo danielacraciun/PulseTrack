@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddPulseLog" />
-        <activity android:name=".PulseLogDetail"></activity>
+        <activity android:name=".PulseLogDetail" />
     </application>
 
 </manifest>
