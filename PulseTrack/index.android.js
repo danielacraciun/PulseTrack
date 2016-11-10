@@ -137,10 +137,10 @@ var styles = StyleSheet.create({
         backgroundColor:'#81c04d',
         paddingTop:30,
         paddingBottom:10,
-        flexDirection:'row'    //Step 1
+        flexDirection:'row'
     },
     toolbarButton:{
-        width: 80,            //Step 2
+        width: 80,
     },
     toolbarTitle:{
         fontSize: 25,
@@ -148,7 +148,7 @@ var styles = StyleSheet.create({
         textAlign: 'left',
         paddingLeft:10,
         fontWeight:'bold',
-        flex:1                //Step 3
+        flex:1
     },
     listView: {
         backgroundColor: 'green',
