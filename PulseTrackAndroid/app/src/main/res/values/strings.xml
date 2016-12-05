@@ -5,4 +5,6 @@
     <string name="feeling_message">How are you feeling?</string>
     <string name="button_send">SUBMIT</string>
     <string name="pulse_log">PULSE LOG</string>
+    <string name="button_edit">EDIT</string>
+    <string name="button_delete">DELETE</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.dana.pulsetrackandroid;
 
+import java.util.Date;
+
 /**
  * Created by dana on 11/8/16.
  */
@@ -8,9 +10,12 @@ public class PulseLog {
     private Integer pulse;
     private String feeling;
 
+    private Date time;
+
     public PulseLog() {
         pulse = 0;
         feeling = "";
+        time = new Date();
     }
 
     public PulseLog(Integer pulse, String feeling) {
@@ -22,16 +27,12 @@ public class PulseLog {
         return pulse;
     }
 
-    public void setPulse(Integer pulse) {
-        this.pulse = pulse;
-    }
-
     public String getFeeling() {
         return feeling;
     }
 
-    public void setFeeling(String feeling) {
-        this.feeling = feeling;
+    public Date getTime() {
+        return time;
     }
 
     @Override

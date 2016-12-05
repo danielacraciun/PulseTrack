@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.dana.pulsetrackandroid.utils.Convertors.parsePulseLogString;
+
 public class MainActivity extends AppCompatActivity {
 
     private static List<String> pulseLog = new ArrayList<>();
@@ -31,16 +33,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 final String item = (String) parent.getItemAtPosition(position);
-                String pulse = item.replaceAll("[^\\d.]", "");
-                String feeling = item.split("feeling:")[1].replaceAll(" ", "");
-                editItem(pulse, feeling);
+                String[] split = item.replaceAll(" ", "").split("feeling:");
+                String pulse = split[0].replaceAll("[^\\d.]", "");
+                String feeling = split[1];
+                detailLog(pulse, feeling);
             }
         });
 
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
-
-        System.out.println(source);
         if (source != null) {
             if (Objects.equals(source, "add")) {
                 String pulse = intent.getStringExtra("pulse");
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!Objects.equals(initPulse, "") && initFeeling != null) {
                     initLog = new PulseLog(Integer.parseInt(initPulse), initFeeling);
                 }
-                if(!Objects.equals(initPulse, "") && initFeeling != null) {
+                if(!Objects.equals(newPulse, "") && newFeeling != null) {
                     newLog = new PulseLog(Integer.parseInt(newPulse), newFeeling);
                 }
 
@@ -73,6 +74,28 @@ public class MainActivity extends AppCompatActivity {
                         PulseLog ps = parsePulseLogString(pulseLog.get(i));
                         if (compareLog(initLog, ps)) {
                             pulseLog.set(i, newLog.toString());
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            } else if (Objects.equals(source, "remove")) {
+                String initPulse = intent.getStringExtra("initPulse");
+                String initFeeling = intent.getStringExtra("initFeeling");
+
+                PulseLog initLog = null;
+
+                System.out.println(initFeeling);
+                System.out.println(initPulse);
+
+                if(!Objects.equals(initPulse, "") && initFeeling != null) {
+                    initLog = new PulseLog(Integer.parseInt(initPulse), initFeeling);
+                }
+
+                if (initLog != null) {
+                    for (int i = 0; i < pulseLog.size(); i++) {
+                        PulseLog ps = parsePulseLogString(pulseLog.get(i));
+                        if (compareLog(initLog, ps)) {
+                            pulseLog.remove(i);
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -91,14 +114,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void editItem(String pulse, String feeling) {
+    public void detailLog(String pulse, String feeling) {
         Intent intent = new Intent(this, PulseLogDetail.class);
         intent.putExtra("pulse", pulse);
         intent.putExtra("feeling", feeling);
         startActivity(intent);
-    }
-
-    private PulseLog parsePulseLogString(String item) {
-        return new PulseLog(Integer.parseInt(item.replaceAll("[^\\d.]", "")), item.split("feeling:")[1].replaceAll(" ", ""));
     }
 }

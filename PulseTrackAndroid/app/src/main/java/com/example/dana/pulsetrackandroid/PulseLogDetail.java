@@ -28,6 +28,16 @@ public class PulseLogDetail extends AppCompatActivity {
         editFeeling.setText(initFeeling);
     }
 
+    public void removeLog(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+
+        intent.putExtra("initPulse", initLog.getPulse().toString());
+        intent.putExtra("initFeeling", initLog.getFeeling());
+        intent.putExtra("source", "remove");
+
+        startActivity(intent);
+    }
+
     public void updateLog(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         EditText editText1 = (EditText) findViewById(R.id.editNoPulse);
@@ -38,8 +48,10 @@ public class PulseLogDetail extends AppCompatActivity {
 
         intent.putExtra("newPulse", message1);
         intent.putExtra("newFeeling", message2);
+
         intent.putExtra("initPulse", initLog.getPulse().toString());
         intent.putExtra("initFeeling", initLog.getFeeling());
+
         intent.putExtra("source", "edit");
 
         startActivity(intent);
