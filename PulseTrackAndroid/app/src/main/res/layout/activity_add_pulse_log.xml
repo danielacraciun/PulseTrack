@@ -26,7 +26,6 @@
         android:inputType="text|textPersonName"
         android:ems="10"
         android:layout_below="@+id/addPulse"
-        android:layout_alignEnd="@+id/addPulse"
         android:layout_marginTop="18dp"
         android:id="@+id/editFeeling"
         android:hint="@string/feeling_message" />
@@ -35,9 +34,19 @@
         android:text="@string/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editFeeling"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"
         android:id="@+id/button2"
-        android:onClick="sendLogBack"/>
+        android:onClick="sendLogBack"
+        android:layout_marginBottom="24dp"
+        android:layout_alignBottom="@+id/editFeeling"
+        android:layout_alignParentEnd="true" />
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/datePicker3"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:headerBackground="?android:attr/colorPrimary" />
+
 </RelativeLayout>

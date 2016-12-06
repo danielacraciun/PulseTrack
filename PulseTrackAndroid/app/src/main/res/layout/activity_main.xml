@@ -27,12 +27,21 @@
         />
 
     <Button
+        android:text="Stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/button3"
+        android:onClick="viewStats" />
+
+    <Button
         android:text="Log pulse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button"
+        android:onClick="addLog"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="addLog"/>
+        android:layout_toStartOf="@+id/button3" />
 
 </RelativeLayout>

@@ -10,44 +10,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dana.pulsetrackandroid.PulseLogDetail">
 
-    <EditText
+    <TextView
+        android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/editNoPulse" />
+        android:id="@+id/editDate"
+        android:layout_alignEnd="@+id/editNoPulse" />
+
+    <Button
+        android:text="@string/button_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/submitDelete"
+        tools:text="@string/button_delete"
+        android:onClick="removeLog"
+        android:layout_below="@+id/editFeeling"
+        android:layout_alignEnd="@+id/editFeeling"
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
         android:ems="10"
+        android:id="@+id/editFeeling"
         android:layout_below="@+id/editNoPulse"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"
-        android:id="@+id/editFeeling" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="@string/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:id="@+id/submitEdit"
-        android:layout_below="@+id/editFeeling"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
         android:onClick="updateLog"
-        tools:text="@string/button_edit" />
+        tools:text="@string/button_edit"
+        android:layout_alignBaseline="@+id/submitDelete"
+        android:layout_alignBottom="@+id/submitDelete"
+        android:layout_alignParentStart="true" />
 
-    <Button
-        android:text="@string/button_delete"
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/submitEdit"
-        android:layout_alignEnd="@+id/editFeeling"
-        android:id="@+id/submitDelete"
-        tools:text="@string/button_delete"
-        android:onClick="removeLog" />
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editNoPulse"
+        android:layout_marginTop="12dp"
+        android:layout_below="@+id/editDate"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

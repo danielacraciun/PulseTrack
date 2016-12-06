@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".AddPulseLog" />
         <activity android:name=".PulseLogDetail" />
+        <activity android:name=".Statistics"></activity>
     </application>
 
 </manifest>

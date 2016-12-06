@@ -1,12 +1,21 @@
 package com.example.dana.pulsetrackandroid;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by dana on 11/8/16.
  */
 
-public class PulseLog {
+public class PulseLog implements Serializable {
+    private static final AtomicInteger count = new AtomicInteger(0);
+
+    public int getId() {
+        return id;
+    }
+
+    private final int id;
     private Integer pulse;
     private String feeling;
 
@@ -16,11 +25,21 @@ public class PulseLog {
         pulse = 0;
         feeling = "";
         time = new Date();
+        id = count.incrementAndGet();
     }
 
     public PulseLog(Integer pulse, String feeling) {
+        id = count.incrementAndGet();
         this.pulse = pulse;
         this.feeling = feeling;
+        time = new Date();
+    }
+
+    PulseLog(Integer pulse, String feeling, Date date) {
+        id = count.incrementAndGet();
+        this.pulse = pulse;
+        this.feeling = feeling;
+        this.time = date;
     }
 
     public Integer getPulse() {
@@ -37,7 +56,7 @@ public class PulseLog {
 
     @Override
     public String toString() {
-        return "pulse:  " + pulse + ", feeling:  " + feeling;
+        return "pulse:  " + pulse + " feeling:  " + feeling;
     }
 
     @Override
