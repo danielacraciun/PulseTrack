@@ -4,7 +4,6 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  ListView,
   View,
   TouchableHighlight,
   Alert,
@@ -14,6 +13,8 @@ import {
 import { AddItem } from './addlog.js'
 import { EditItem } from './editlog.js'
 import { CustomButton } from './button.js'
+import { ListView } from 'realm/react-native';
+import realm from './models';
 
 class PulseList extends Component {
   constructor(prop){
@@ -24,34 +25,27 @@ class PulseList extends Component {
       }),
       loaded: false,
     };
-  }
 
-  componentWillReceiveProps(nextProps) {
-    var newItems = [];
-    for (var i=0; i < nextProps.content.length; i++) {
-        var newItem = {}
-        newItem["value"] = nextProps.content[i].value;
-        newItem["feeling"] = nextProps.content[i].feeling;
-        newItems.push(newItem);
-    }
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(
-          newItems
-      ),
-      loaded: true,
+    let elements = this.props.content;
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2 });
+
+    realm.objects('Pulse').addListener((pulses, changes) => {
+      this.setState({dataSource: this.state.dataSource.cloneWithRows(pulses)})
     });
+
+    this.state = {
+      dataSource: ds.cloneWithRows(elements),
+      data: elements
+    };
   }
 
-  componentDidMount(){
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(
-          this.props.content
-      ),
-      loaded: true,
-    });
+  async deleteLog(log) {
+    realm.write(() => {
+      realm.delete(log)
+    })
   }
 
-  renderPulse(pulse, navigator, store) {
+  renderPulse(pulse, navigator) {
     return (
       <View>
       <Text style={{fontSize:20,
@@ -61,8 +55,17 @@ class PulseList extends Component {
       <CustomButton
         name='EDIT'
         onPress={() => navigator.push({
-          component: EditItem, passProps: {store: store, item:pulse}, index: 2})}
+          component: EditItem, passProps: {item:pulse}, index: 2})}
         />
+        <CustomButton
+          name='DELETE'
+          onPress= {() => Alert.alert(
+            'Delete',
+            "Are you sure you want to delete this log?",
+            [{text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+            {text: 'OK', onPress: () => this.deleteLog(pulse)}]
+          )}
+          />
       <Text style={{
           borderBottomWidth: 2,
           borderBottomColor: 'white',
@@ -75,7 +78,7 @@ class PulseList extends Component {
     return (
       <ListView
       dataSource={this.state.dataSource}
-      renderRow={(rowData, navigator, store) => this.renderPulse(rowData, this.props.navigator, this.props.content)}
+      renderRow={(rowData, navigator) => this.renderPulse(rowData, this.props.navigator)}
       style={styles.listView}
       />
     );
@@ -93,8 +96,7 @@ export class AppMain extends Component {
             <View style={styles.toolbar}>
                 <Text style={styles.toolbarTitle}>PulseTrack</Text>
                   <TouchableHighlight
-                    onPress={() => this.props.navigator.push({
-                      component: AddItem, passProps: {store: this.props.store}, index: 1})}>
+                    onPress={() => this.props.navigator.push({component: AddItem, index: 1})}>
                   <View>
                     <Text style={styles.toolbarButton}>Log pulse</Text>
                   </View>
@@ -112,11 +114,7 @@ class App extends Component {
   constructor(props)
   {
     super(props);
-    this.store = [
-     { "value": "62", "feeling": "content"},
-     { "value": "75", "feeling": "happy"},
-     { "value": "83", "feeling": "angry"},
-   ];
+    this.store = realm.objects('Pulse');
   }
 
   renderScene (route, navigator) {

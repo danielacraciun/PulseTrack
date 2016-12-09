@@ -15,20 +15,29 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class Statistics extends AppCompatActivity {
+
+    private Realm realm;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
-        Intent i = getIntent();
-        ArrayList<PulseLog> list = (ArrayList<PulseLog>) i.getSerializableExtra("pulses");
+
+        realm = Realm.getDefaultInstance();
+        RealmResults results = realm.where(PulseLog.class).findAll();
+        List<PulseLog> list = new ArrayList<>();
+        list.addAll(results);
+
         DataPoint[] dps = new DataPoint[list.size()];
         int position = 0;
-        System.out.println(list.stream().map(PulseLog::getTime).collect(Collectors.toList()));
         for (PulseLog p: list) {
             dps[position] = new DataPoint(p.getTime(), p.getPulse());
             position++;
@@ -41,7 +50,7 @@ public class Statistics extends AppCompatActivity {
         // set date label formatter
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
             graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-            //graph.getGridLabelRenderer().setPadding(20);
+
         // set manual x bounds to have nice steps
             graph.getViewport().setMinX(list.get(0).getTime().getTime());
             graph.getViewport().setMaxX(list.get(list.size() - 1).getTime().getTime());

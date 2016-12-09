@@ -16,57 +16,40 @@ import android.widget.Toast;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 
-import static com.example.dana.pulsetrackandroid.utils.Dialogs.messageDialog;
+import io.realm.Realm;
+
+import static com.example.dana.pulsetrackandroid.utils.Validators.validateUpdateInput;
 
 public class AddPulseLog extends AppCompatActivity {
 
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
-    }
+    Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pulse_log);
-        Intent intent = getIntent();
         setUpDatePicker();
+        realm = Realm.getDefaultInstance();
     }
 
     public void sendLogBack(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
         EditText editText1 = (EditText) findViewById(R.id.addPulse);
         EditText editText2 = (EditText) findViewById(R.id.editFeeling);
         DatePicker dp = (DatePicker) findViewById(R.id.datePicker3);
 
-        String message1 = editText1.getText().toString();
-        String message2 = editText2.getText().toString();
-        Date d = getDateFromDatePicker(dp);
-        if (StringUtils.isBlank(message1) && StringUtils.isBlank(message2)) {
-            messageDialog("Can't proceed with empty fields", null, this);
-        } else if (StringUtils.isBlank(message1)) {
-            messageDialog("Can't proceed with empty pulse field", null, this);
-        } else if (StringUtils.isBlank(message2)) {
-            messageDialog("Can't proceed with empty feeling field", null, this);
-        } else {
-            intent.putExtra("pulse", message1);
-            intent.putExtra("feeling", message2);
-            intent.putExtra("date", d.toString());
-            intent.putExtra("source", "add");
-
-            // Not working yet
-            // sendMail("pulse:" + message1 + " feeling:" + message2);
-
-            startActivity(intent);
+        String pulse = editText1.getText().toString();
+        String feeling = editText2.getText().toString();
+        if (validateUpdateInput(pulse, feeling, this)) {
+            PulseLog item = new PulseLog(generateNextId(), Integer.parseInt(pulse),
+                    feeling, getDateFromDatePicker(dp));
+            realm.beginTransaction();
+            PulseLog savedItem = realm.copyToRealm(item);
+            realm.commitTransaction();
+            // todo sendMail
+            this.finish();
         }
     }
 
@@ -83,7 +66,6 @@ public class AddPulseLog extends AppCompatActivity {
         }
     }
 
-
     private void setUpDatePicker() {
         DatePicker dp = (DatePicker) findViewById(R.id.datePicker3);
         dp.setOnTouchListener((v, event) -> {
@@ -93,16 +75,27 @@ public class AddPulseLog extends AppCompatActivity {
         dp.setMaxDate(new Date().getTime());
     }
 
-    /**
-     *
-     * @param datePicker
-     * @return a java.util.Date
-     */
     public static Date getDateFromDatePicker(DatePicker datePicker){
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth() + 1;
         int year =  datePicker.getYear();
 
         return new DateTime(year, month, day, 0, 0).toDate();
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    private int generateNextId() {
+        Number maxId = realm.where(PulseLog.class).findAll().max("id");
+        if (maxId != null) {
+            return maxId.intValue() + 1;
+        }
+        return 0;
     }
 }

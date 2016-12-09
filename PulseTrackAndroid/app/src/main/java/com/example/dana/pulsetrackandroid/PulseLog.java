@@ -4,42 +4,34 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.realm.RealmModel;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
 /**
  * Created by dana on 11/8/16.
  */
+public class PulseLog extends RealmObject {
 
-public class PulseLog implements Serializable {
-    private static final AtomicInteger count = new AtomicInteger(0);
-
-    public int getId() {
-        return id;
-    }
-
-    private final int id;
+    @PrimaryKey
+    private int id;
     private Integer pulse;
     private String feeling;
-
     private Date time;
 
     public PulseLog() {
-        pulse = 0;
-        feeling = "";
-        time = new Date();
-        id = count.incrementAndGet();
     }
 
-    public PulseLog(Integer pulse, String feeling) {
-        id = count.incrementAndGet();
+    public PulseLog(int id, Integer pulse, String feeling, Date time) {
+        this.id = id;
         this.pulse = pulse;
         this.feeling = feeling;
-        time = new Date();
+        this.time = time;
     }
 
-    PulseLog(Integer pulse, String feeling, Date date) {
-        id = count.incrementAndGet();
-        this.pulse = pulse;
-        this.feeling = feeling;
-        this.time = date;
+    public int getId() {
+        return id;
     }
 
     public Integer getPulse() {
@@ -76,5 +68,21 @@ public class PulseLog implements Serializable {
         int result = pulse != null ? pulse.hashCode() : 0;
         result = 31 * result + (feeling != null ? feeling.hashCode() : 0);
         return result;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPulse(Integer pulse) {
+        this.pulse = pulse;
+    }
+
+    public void setFeeling(String feeling) {
+        this.feeling = feeling;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

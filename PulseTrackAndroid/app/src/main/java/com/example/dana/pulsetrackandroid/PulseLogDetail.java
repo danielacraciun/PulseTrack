@@ -2,6 +2,8 @@ package com.example.dana.pulsetrackandroid;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,78 +19,81 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 import static com.example.dana.pulsetrackandroid.utils.Dialogs.messageDialog;
 import static com.example.dana.pulsetrackandroid.utils.Dialogs.optionDialog;
+import static com.example.dana.pulsetrackandroid.utils.Validators.validateUpdateInput;
 
 public class PulseLogDetail extends AppCompatActivity {
 
     @BindView(R.id.editNoPulse)
     EditText editPulse;
+
     @BindView(R.id.editFeeling)
     EditText editFeeling;
+
     @BindView(R.id.editDate)
     TextView editDate;
-    int initPosition;
+
+    Realm realm;
+
+    int objId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pulse_log_detail);
         ButterKnife.bind(this);
+        realm = Realm.getDefaultInstance();
 
         Intent intent = getIntent();
-        String initPulse = intent.getStringExtra("pulse");
-        String initFeeling = intent.getStringExtra("feeling");
-        String date = intent.getStringExtra("date");
+        objId = intent.getIntExtra("id", -1);
 
-        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzzzzzzz yyyy");
-        Date final_date = new Date();
-
-        try { final_date = df.parse(date);
-        } catch (ParseException ignored) { }
-
-        initPosition = Integer.parseInt(intent.getStringExtra("position"));
-
-        editPulse.setText(initPulse);
-        editFeeling.setText(initFeeling);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        String sDate= sdf.format(final_date);
-        editDate.setText(sDate);
-        editDate.setKeyListener(null);
-    }
-
-    public void removeLog(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-
-        intent.putExtra("source", "remove");
-        intent.putExtra("position", String.valueOf(initPosition));
-
-        optionDialog("Are you sure you want to delete?", intent, this);
-    }
-
-    public void updateLog(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        String message1 = editPulse.getText().toString();
-        String message2 = editFeeling.getText().toString();
-
-        if (StringUtils.isBlank(message1) && StringUtils.isBlank(message2)) {
-            messageDialog("Can't proceed with empty fields", null, this);
-        } else if (StringUtils.isBlank(message1)) {
-            messageDialog("Can't proceed with empty pulse field", null, this);
-        } else if (StringUtils.isBlank(message2)) {
-            messageDialog("Can't proceed with empty feeling field", null, this);
-        } else {
-            intent.putExtra("newPulse", message1);
-            intent.putExtra("newFeeling", message2);
-            intent.putExtra("source", "edit");
-            intent.putExtra("position", String.valueOf(initPosition));
-
-            startActivity(intent);
+        if (objId >= 0) {
+            System.out.println(objId);
+            PulseLog p = realm.where(PulseLog.class).equalTo("id", objId).findFirst();
+            System.out.println(p.getId());
+            editPulse.setText(p.getPulse().toString());
+            editFeeling.setText(p.getFeeling());
+            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+            String sDate= df.format(p.getTime());
+            editDate.setText(sDate);
+            editDate.setKeyListener(null);
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void removeLog(View view) {
+        optionDialog("Are you sure you want to delete?", this, () -> {
+            realm.executeTransaction(realm1 -> realm.where(PulseLog.class)
+                    .equalTo("id", objId)
+                    .findAll()
+                    .deleteAllFromRealm()
+            );
+            this.finish();
+            return true;
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void updateLog(View view) {
+        String pulse = editPulse.getText().toString();
+        String feeling = editFeeling.getText().toString();
+
+        if (validateUpdateInput(pulse, feeling, this)) {
+            realm.executeTransaction(realm -> {
+                PulseLog p = realm.where(PulseLog.class).equalTo("id", objId).findFirst();
+                p.setPulse(Integer.valueOf(pulse));
+                p.setFeeling(feeling);
+            });
+            this.finish();
+        }
+    }
+
+
 }

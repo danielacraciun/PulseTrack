@@ -3,44 +3,41 @@ package com.example.dana.pulsetrackandroid.utils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class Dialogs {
-    public static void optionDialog(String str, final Intent intent, final Context source){
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void optionDialog(String str, final Context source, Callable<Boolean> fct){
         AlertDialog.Builder builder = new AlertDialog.Builder(source);
         builder.setMessage(str);
         builder.setCancelable(false);
         builder.setPositiveButton(
                 "Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        if(intent != null) { source.startActivity(intent); }
-                    }
+                (dialog, id) -> {
+                    dialog.dismiss();
+                    try { fct.call(); } catch (Exception ignored) { }
                 });
 
         builder.setNegativeButton(
                 "No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
+                (dialog, id) -> dialog.dismiss());
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    public static void messageDialog(String str, final Intent intent, final Context source) {
+    public static void messageDialog(String str, final Context source) {
         AlertDialog.Builder builder = new AlertDialog.Builder(source);
         builder.setMessage(str);
         builder.setCancelable(false);
-        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if(intent != null) { source.startActivity(intent); }
-            }
+        builder.setNeutralButton("OK", (dialog, which) -> {
+            dialog.dismiss();
         });
         AlertDialog alert = builder.create();
         alert.show();
