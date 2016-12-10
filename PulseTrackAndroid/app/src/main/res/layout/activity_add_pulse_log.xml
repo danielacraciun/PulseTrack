@@ -37,16 +37,15 @@
         android:id="@+id/button2"
         android:onClick="sendLogBack"
         android:layout_marginBottom="24dp"
-        android:layout_alignBottom="@+id/editFeeling"
         android:layout_alignParentEnd="true" />
 
     <DatePicker
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_height="390dip"
         android:id="@+id/datePicker3"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:headerBackground="?android:attr/colorPrimary" />
+        android:headerBackground="?android:attr/colorPrimary"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/editFeeling"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

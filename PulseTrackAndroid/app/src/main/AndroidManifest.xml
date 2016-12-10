@@ -15,9 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddPulseLog" />
+        <activity android:name=".AddPulseLog" android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity android:name=".PulseLogDetail" />
-        <activity android:name=".Statistics"></activity>
+        <activity android:name=".Statistics" />
     </application>
 
 </manifest>

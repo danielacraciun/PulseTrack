@@ -32,7 +32,7 @@ public class Statistics extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
 
         realm = Realm.getDefaultInstance();
-        RealmResults results = realm.where(PulseLog.class).findAll();
+        RealmResults results = realm.where(PulseLog.class).findAll().sort("time");
         List<PulseLog> list = new ArrayList<>();
         list.addAll(results);
 
