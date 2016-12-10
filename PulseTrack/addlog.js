@@ -4,17 +4,20 @@ import {
   TextInput,
   Navigator,
   View,
-  DatePickerAndroid
 } from 'react-native';
 import { CustomButton } from './button.js'
 import realm from './models';
+import { Form, InputField,
+        Separator, SwitchField, LinkField ,
+        PickerField, DatePickerField
+      } from 'react-native-form-generator';
 
 export class AddItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pulse: 'pulse value',
-      feeling: 'how are you feeling?',
+      pulse: '',
+      feeling: '',
       loggedAt: new Date()
     };
   }
@@ -30,6 +33,7 @@ export class AddItem extends Component {
   addItem() {
     if (this.state.pulse != ''&& this.state.feling != '' && this.state.pulse == parseInt(this.state.pulse, 10))
     {
+      alert(this.state.loggedAt);
       realm.write(() => {
         realm.create('Pulse',
         {id: this.getNextId(),
@@ -44,27 +48,28 @@ export class AddItem extends Component {
     }
   }
 
-  datePick() {
-  }
+  handleFormChange(formData){
+    this.state.pulse = formData.pulse;
+    this.state.feeling = formData.feeling;
+    this.state.loggedAt = formData.loggedAt;
+   }
 
   render() {
     return(
       <View>
         <Text>LOG PULSE</Text>
-          <View>
-            <TextInput value={this.state.pulse}
-               onFocus={() => this.setState({pulse: ''})}
-               onChangeText={(pulse) => this.setState({pulse})}/>
-             <TextInput value={this.state.feeling}
-                  onFocus={() => this.setState({feeling: ''})}
-                  onChangeText={(feeling) => this.setState({feeling})}/>
-          </View>
-          <View>
-            <CustomButton name='CHOOSE DATE' onPress={() => this.datePick()}/>
-            <CustomButton name='RETURN' onPress={() => this.props.navigator.pop()}/>
-            <CustomButton name='SUBMIT LOG' onPress={() => this.addItem()}/>
-          </View>
-        </View>
+          <Form ref='pulseForm'
+            onChange={this.handleFormChange.bind(this)}
+            label="Pulse Information">
+            <InputField ref='pulse' placeholder='Enter pulse'/>
+            <InputField ref='feeling' placeholder='How are you feeling?'/>
+            <DatePickerField ref='loggedAt'
+              minimumDate={new Date('1/1/1900')}
+              maximumDate={new Date()} mode='date' placeholder='Taken at'/>
+          </Form>
+          <CustomButton name='RETURN' onPress={() => this.props.navigator.pop()}/>
+          <CustomButton name='SUBMIT LOG' onPress={() => this.addItem()}/>
+      </View>
     );
   }
 }

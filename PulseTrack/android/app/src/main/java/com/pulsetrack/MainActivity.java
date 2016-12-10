@@ -1,6 +1,7 @@
 package com.pulsetrack;
 
 import com.facebook.react.ReactActivity;
+import com.horcrux.svg.RNSvgPackage;
 
 public class MainActivity extends ReactActivity {
 

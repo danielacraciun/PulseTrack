@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { AddItem } from './addlog.js'
+import { Statistics } from './stats.js'
 import { EditItem } from './editlog.js'
 import { CustomButton } from './button.js'
 import { ListView } from 'realm/react-native';
@@ -99,6 +100,13 @@ export class AppMain extends Component {
                     onPress={() => this.props.navigator.push({component: AddItem, index: 1})}>
                   <View>
                     <Text style={styles.toolbarButton}>Log pulse</Text>
+                  </View>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight
+                    onPress={() => this.props.navigator.push({component: Statistics, index: 1})}>
+                  <View>
+                    <Text style={styles.toolbarButton}>Stats</Text>
                   </View>
                   </TouchableHighlight>
             </View>
